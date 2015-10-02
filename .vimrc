@@ -1,10 +1,8 @@
+" combined suggestions from vim wikia and unlogic.co.uk to set
+" up vim as a python IDE.
+
 " URL: http://vim.wikia.com/wiki/Example_vimrc
-" Authors: http://vim.wikia.com/wiki/Vim_on_Freenode
-" Description: A minimal, but feature rich, example .vimrc. If you are a
-"              newbie, basing your first .vimrc on this file is a good choice.
-"              If you're a more advanced user, building your own .vimrc based
-"              on this file is still a good idea.
- 
+" URL: http://unlogic.co.uk/2013/02/08/vim-as-a-python-ide/ 
 "------------------------------------------------------------
 " Features {{{1
 "
@@ -18,12 +16,93 @@ set nocompatible
 " Attempt to determine the type of a file based on its name and possibly its
 " contents. Use this to allow intelligent auto-indenting for each filetype,
 " and for plugins that are filetype specific.
-filetype indent plugin on
- 
+
+filetype off
 " Enable syntax highlighting
 syntax on
- 
- 
+
+set rtp+=~/.vim/bundle/vundle
+call vundle#rc()
+Bundle 'gmarik/vundle'
+filetype plugin indent on
+
+
+" Highlight if the characters go past 120 columns
+augroup vimrc_autocmds
+        autocmd!
+        " highlight characters past column 120
+         autocmd FileType python highlight Excess ctermbg=DarkGrey guibg=Black
+         autocmd FileType python match Excess /\%120v.*/
+         autocmd FileType python set nowrap
+         augroup END
+
+
+" Whatever to be installed with bundle should be place in this category
+" powerline installation
+Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+
+" Making sure powerline is always on and fonts are displayed on powerline
+" correctly
+set guifont=SourceCodePro\ for\ Powerline\ 9
+set laststatus=2
+
+" installing nerdtree
+Bundle 'scrooloose/nerdtree'
+" mapping function key to nerdtree
+map <F7> :NERDTreeToggle<CR>
+
+" adding python mode to vim
+Bundle 'klen/python-mode'
+
+" python mode rules is as follows
+" Python-mode
+" " Activate rope
+" " Keys:
+" " K             Show python docs
+" " <Ctrl-Space>  Rope autocomplete
+" " <Ctrl-c>g     Rope goto definition
+" " <Ctrl-c>d     Rope show documentation
+" " <Ctrl-c>f     Rope find occurrences
+" " <Leader>b     Set, unset breakpoint (g:pymode_breakpoint enabled)
+" " [[            Jump on previous class or function (normal, visual, operator
+" modes)
+" " ]]            Jump on next class or function (normal, visual, operator
+" modes)
+" " [M            Jump on previous class or method (normal, visual, operator
+" modes)
+" " ]M            Jump on next class or method (normal, visual, operator modes)
+
+" syntax highlighting for python, turned off as I use jedi-vim
+let g:pymode_rope = 0
+
+" Documentation
+let g:pymode_doc = 1
+let g:pymode_doc_key = 'K'
+
+"Linting
+let g:pymode_lint = 1
+let g:pymode_lint_checkers = ["pep8","pyflakes"]
+" Auto check on save
+let g:pymode_lint_write = 1
+
+" Support virtualenv
+let g:pymode_virtualenv = 1
+
+" Enable breakpoints plugin
+let g:pymode_breakpoint = 1
+let g:pymode_breakpoint_bind = '<leader>b'
+
+" syntax highlighting
+let g:pymode_syntax = 1
+let g:pymode_syntax_all = 1
+let g:pymode_syntax_indent_errors = g:pymode_syntax_all
+let g:pymode_syntax_space_errors = g:pymode_syntax_all
+
+" Don't autofold code
+let g:pymode_folding = 0
+
+Plugin 'davidhalter/jedi-vim'
+
 "------------------------------------------------------------
 " Must have options {{{1
 "
@@ -139,8 +218,8 @@ set expandtab
  
 " Indentation settings for using hard tabs for indent. Display tabs as
 " four characters wide.
-"set shiftwidth=4
-"set tabstop=4
+set shiftwidth=4
+set tabstop=4
  
  
 "------------------------------------------------------------
